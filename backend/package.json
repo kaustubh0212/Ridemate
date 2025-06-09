@@ -1,0 +1,37 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "backend for ridemate",
+  "homepage": "https://github.com/kaustubh0212/Ridemate#readme",
+  "bugs": {
+    "url": "https://github.com/kaustubh0212/Ridemate/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kaustubh0212/Ridemate.git"
+  },
+  "license": "ISC",
+  "author": "Kaustubh Agrawal",
+  "type": "commonjs",
+  "main": "index.js",
+
+  "scripts": {
+  "start": "node index.js",
+  "dev": "nodemon index.js"
+}
+  },
+  "devDependencies": {
+    "bcryptjs": "^3.0.2",
+    "cloudinary": "^2.6.1",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.15.1",
+    "multer": "^2.0.1",
+    "nodemailer": "^7.0.3",
+    "nodemon": "^3.1.10",
+    "socket.io": "^4.8.1"
+  }
+}
