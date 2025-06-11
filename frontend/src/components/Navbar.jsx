@@ -13,6 +13,7 @@ import {
   List,
   ListItem,
   ListItemText,
+  ListItemButton
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Link as RouterLink, useLocation } from "react-router-dom";
@@ -49,24 +50,26 @@ const Navbar = () => {
     >
       <List>
         {navItems.map((item) => (
-          <ListItem button key={item.label}>
-            <ScrollLink
-              to={item.to}
-              smooth={true}
-              duration={500}
-              offset={-70}
-              style={{ textDecoration: "none", color: "white", width: "100%" }}
-            >
-              <ListItemText primary={item.label} />
-            </ScrollLink>
-          </ListItem>
+          <ScrollLink
+  key={item.label}
+  to={item.to}
+  smooth={true}
+  duration={500}
+  offset={-70}
+  style={{ textDecoration: "none", color: "white" }}
+>
+  <ListItem button>
+    <ListItemText primary={item.label} />
+  </ListItem>
+</ScrollLink>
         ))}
-        <ListItem button component={RouterLink} to="/login">
-          <ListItemText primary="Login" />
-        </ListItem>
-        <ListItem button component={RouterLink} to="/register">
-          <ListItemText primary="Register" />
-        </ListItem>
+        <ListItemButton component={RouterLink} to="/login">
+  <ListItemText primary="Login" />
+</ListItemButton>
+
+<ListItemButton component={RouterLink} to="/register">
+  <ListItemText primary="Register" />
+</ListItemButton>
       </List>
     </Box>
   );

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Container, Box, Avatar, Typography, TextField, Button, IconButton, Divider } from '@mui/material';
+import { Container, Box, Avatar, Typography, Button, IconButton, Divider } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import GoogleIcon from '@mui/icons-material/Google';
 
@@ -15,19 +15,11 @@ const Register = () => {
   });
 
   const handleChange = (e) => {
-    const { name, value, files } = e.target;
+    const { name, value, files, type } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: files ? files[0] : value,
+      [name]: type === 'file' ? files[0] : value,
     }));
-  };
-
-  const getInitialAvatar = () => {
-    return formData.name ? formData.name[0].toUpperCase() : '?';
-  };
-
-  const handleGoogleLogin = () => {
-    alert('Google Login will be integrated.');
   };
 
   const handleSubmit = (e) => {
@@ -35,37 +27,13 @@ const Register = () => {
     console.log(formData);
   };
 
-  const FieldRow = ({ label, children }) => (
-    <Box
-      sx={{
-        display: 'flex',
-        alignItems: 'center',
-        mb: 2,
-        width: '100%',
-        maxWidth: 350,
-        mx: 'auto',
-      }}
-    >
-      <Typography
-        sx={{
-          minWidth: '100px',
-          color: 'white',
-          fontWeight: 'bold',
-          mr: 1,
-          userSelect: 'none',
-        }}
-      >
-        {label}
-      </Typography>
-      <Box sx={{ flexGrow: 1 }}>{children}</Box>
-    </Box>
-  );
+  const getInitialAvatar = () => (formData.name ? formData.name[0].toUpperCase() : '?');
 
   return (
     <Container maxWidth="sm">
       <Box
         sx={{
-          marginTop: 6,
+          marginTop: '24px',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
@@ -80,7 +48,7 @@ const Register = () => {
       >
         <label htmlFor="avatar-upload">
           <Input accept="image/*" id="avatar-upload" type="file" name="avatar" onChange={handleChange} />
-          <IconButton component="span" sx={{ p: 0 }}>
+          <IconButton /*component="span"*/ sx={{ p: 0 }}>
             <Avatar
               sx={{ width: 70, height: 70, bgcolor: '#555', fontSize: 26 }}
               src={formData.avatar ? URL.createObjectURL(formData.avatar) : ''}
@@ -94,116 +62,54 @@ const Register = () => {
           REGISTER
         </Typography>
 
-        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3, width: '100%' }}>
-          <FieldRow label="Name">
-            <TextField
-              required
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              variant="outlined"
-              size="small"
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: 2,
-                  backgroundColor: 'white', // move it here
-                  '& fieldset': {
-                    borderRadius: 2,
-                  },
-                  input: {
-                    color: 'black',
-                    height: 30,
-                    padding: '6px 10px',
-                  },
-                },
-              }}
-            />
-          </FieldRow>
+        <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+          <Box sx={{ mt: 1.5, width: '100%', color: 'white' }}>
+            <label>
+              <strong>Name</strong>
+            </label>
+            <input required type="text" name="name" value={formData.name} onChange={handleChange} style={inputStyle} />
+          </Box>
 
-          <FieldRow label="Email">
-            <TextField
+          <Box sx={{ mt: 1.5, width: '100%' }}>
+            <label>
+              <strong>Email</strong>
+            </label>
+            <input
               required
               type="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
-              variant="outlined"
-              size="small"
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: 2,
-                  backgroundColor: 'white', // move it here
-                  '& fieldset': {
-                    borderRadius: 2,
-                  },
-                  input: {
-                    color: 'black',
-                    height: 30,
-                    padding: '6px 10px',
-                  },
-                },
-              }}
+              style={inputStyle}
             />
-          </FieldRow>
+          </Box>
 
-          <FieldRow label="Phone No.">
-            <TextField
-              required
-              type="tel"
-              name="phone"
-              value={formData.phone}
-              onChange={handleChange}
-              variant="outlined"
-              size="small"
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: 2,
-                  backgroundColor: 'white', // move it here
-                  '& fieldset': {
-                    borderRadius: 2,
-                  },
-                  input: {
-                    color: 'black',
-                    height: 30,
-                    padding: '6px 10px',
-                  },
-                },
-              }}
-            />
-          </FieldRow>
+          <Box sx={{ mt: 1.5, width: '100%' }}>
+            <label>
+              <strong>Phone</strong>
+            </label>
+            <input required type="tel" name="phone" value={formData.phone} onChange={handleChange} style={inputStyle} />
+          </Box>
 
-          <FieldRow label="Password">
-            <TextField
+          <Box sx={{ mt: 1.5, width: '100%' }}>
+            <label>
+              <strong>Password</strong>
+            </label>
+            <input
               required
               type="password"
               name="password"
               value={formData.password}
               onChange={handleChange}
-              variant="outlined"
-              size="small"
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: 2,
-                  backgroundColor: 'white', // move it here
-                  '& fieldset': {
-                    borderRadius: 2,
-                  },
-                  input: {
-                    color: 'black',
-                    height: 30,
-                    padding: '6px 10px',
-                  },
-                },
-              }}
+              style={inputStyle}
             />
-          </FieldRow>
+          </Box>
 
           <Button
             type="submit"
             variant="contained"
             sx={{
               mt: 2,
-              mb: 2,
               backgroundColor: '#000',
               color: 'white',
               borderRadius: 2,
@@ -242,18 +148,26 @@ const Register = () => {
               width: '80%',
               mx: 'auto',
               display: 'flex',
-              alignItems: 'center',
               justifyContent: 'center',
               '&:hover': { backgroundColor: '#333' },
             }}
-            onClick={handleGoogleLogin}
           >
             Register with Google
           </Button>
-        </Box>
+        </form>
       </Box>
     </Container>
   );
+};
+
+const inputStyle = {
+  width: '100%',
+  padding: '10px',
+  borderRadius: '8px',
+  border: '1px solid #ccc',
+  marginTop: '5px',
+  backgroundColor: '#fff',
+  color: '#000',
 };
 
 export default Register;
