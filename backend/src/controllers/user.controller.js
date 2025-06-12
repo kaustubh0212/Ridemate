@@ -8,6 +8,7 @@ import {uploadOnCloudinary} from "../utils/cloudinary.js"
 const registerUser = asyncHandler( async(req, res) => {
     
     // 1) get user details from frontend/postman
+    console.log("req.body: ", req.body)
     const {name, email, phone, password} = req.body
 
     console.log("name: ", name);
@@ -47,36 +48,6 @@ const registerUser = asyncHandler( async(req, res) => {
     if(!avatar){
         throw new ApiError(400, "Avatar is required")
     }
-
-    //console.log("avatar response from cloudinary: \n", avatar)
-
-    /*
-    avatar response from cloudinary: 
-    {
-    asset_id: 'bbe2862216bd7248b346cc9c8a0d8a3b',
-    public_id: 'i4tlhygtbqtnhs4lnyan',
-    version: 1744552765,
-    version_id: '214ba072ca0bff330eff073fd0195041',
-    signature: 'b6d3863cc60aa631880f951e42ed84f4f4df9809',
-    width: 3024,
-    height: 4032,
-    format: 'jpg',
-    resource_type: 'image',
-    created_at: '2025-04-13T13:59:25Z',
-    tags: [],
-    bytes: 1433298,
-    type: 'upload',
-    etag: 'd1a6de0c53a31fe373b7b65701a0eb73',
-    placeholder: false,
-    url: 'http://res.cloudinary.com/dna2qh9gf/image/upload/v1744552765/i4tlhygtbqtnhs4lnyan.jpg',
-    secure_url: 'https://res.cloudinary.com/dna2qh9gf/image/upload/v1744552765/i4tlhygtbqtnhs4lnyan.jpg',
-    asset_folder: '',
-    display_name: 'i4tlhygtbqtnhs4lnyan',
-    original_filename: 'avatar',
-    api_key: '223364694563895'
-    }
-
-*/
 
     // 8) now create a user object from the details recieved. This user object to be uploaded on MongoDB i.e. enter the details in database
 
@@ -120,7 +91,8 @@ const loginUser = asyncHandler( async (req, res) => {
     */
 
     // 1) req body -> data
-    const {email, name, password} = req.body
+    console.log("req.body: ", req.body)
+    const {name, email, password} = req.body
 
     // 2) username or email, one must be there
     if(!name || !email)
@@ -130,7 +102,6 @@ const loginUser = asyncHandler( async (req, res) => {
 
     // 3) find the user
     const user = await User.findOne({
-        // returns the complete user object
         $or: [{email}]
     })
 
@@ -141,7 +112,6 @@ const loginUser = asyncHandler( async (req, res) => {
     // 4) password check
 
     const isPasswordValid = await user.isPasswordCorrect(password)
-    //Very Important Note: we used "user" not "User" which we imported because "User" will be used only when we need predefined functions of MongoDB. But when we need Custom defined functions i.e. what we created in UserSchema, we need to use user which we used to extract details of existing user from the database
 
     if(!isPasswordValid){
         throw new ApiError(404, "Incorrect password given by user")
@@ -157,25 +127,18 @@ const loginUser = asyncHandler( async (req, res) => {
 
     const loggedInUser = await User.findById(user._id).select(" -password -refreshToken")
 
-    /*
-    because the user we currently hold lacks refreshToken as data so recalling from the database OR other way is:
-    user.refreshToken = refreshToken
-    */
-
     const options = {
         // to make sure that cookie is edited from the server / backend only and not the frontend (views only)
         httpOnly: true, // JavaScript on frontend cannot read/edit this cookie (protects from XSS)
         secure: true // Only sent over HTTPS
     }
 
-    //console.log("Every thing looks good, only respnse to send")
 
     return res
     .status(200)
-    .cookie("accessToken", accessToken, options)  // cookie is stored in the browser for next time verification
+    .cookie("accessToken", accessToken, options)
     .cookie("refreshToken", refreshToken, options)
     .json(
-        // this reponse goes to frontend
         new ApiResponse(
             200,
             {
@@ -276,7 +239,7 @@ const refreshAccessToken = asyncHandler( async(req, res) => {
         return res
         .status(200)
         .cookie("accessToken", newAccessToken, options)
-        .cookie("aefreshToken", newRefreshToken, options)
+        .cookie("refreshToken", newRefreshToken, options)
         .json(
             new ApiResponse(
                 200,

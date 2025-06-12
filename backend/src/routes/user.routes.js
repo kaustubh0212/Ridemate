@@ -1,6 +1,6 @@
 import { Router } from "express"; 
 //import { logoutUser, registerUser, loginUser, refreshAccessToken, changeCurrentPassword, getCurrentUser, updateAccountDetails, updateUserCoverImage, updateUserAvatar } from "../controllers/user.controller.js";
-import {registerUser} from "../controllers/user.controller.js";
+import {registerUser, loginUser, refreshAccessToken} from "../controllers/user.controller.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 import {upload} from '../middlewares/multer.middleware.js'
 
@@ -37,7 +37,7 @@ DELETE /user/123 → Delete user with ID 123
 // #endregion
 
 
-//router.route("/login").post(loginUser)
+router.route("/login").post(loginUser)
 
 // secured routes
 
