@@ -1,26 +1,27 @@
-import {createSlice, configureStore} from '@reduxjs/toolkit';
+import { createSlice, configureStore } from '@reduxjs/toolkit';
 
 const authSlice = createSlice({
-    name: "auth",
-    initialState:{
-        isLogin: false,
+  name: 'auth',
+  initialState: {
+    isLogin: false,
+    user: null,
+  },
+  reducers: {
+    login(state, action) {
+      state.isLogin = true;
+      state.user = action.payload; // payload should be user object
 
+      // we will use useSelector() hook to fetch isLogin current status.
+      // const isLoggedIn = useSelector((state) => state.isLogin);  note: Modifying isLoggedIn will NOT update the Redux store. To update the isLogin actually, we will use login and logout.
     },
-    reducers:{
-        login(state){
-            state.isLogin = true;
-        },
-        logout(state){
-            state.isLogin = false
-        },
-        // we will use useSelector() hook to fetch isLogin current status.
-        //const isLoggedIn = useSelector((state) => state.isLogin);  note: Modifying isLoggedIn will NOT update the Redux store. To update the isLogin actually, we will use login and logout.
-    }
-})
+    logout(state) {
+      state.isLogin = false;
+      state.user = null;
+    },
+  },
+});
 
-//export const { increment, decrement, incrementByAmount } = authSlice.actions;
-export const authActions = authSlice.actions  // authAcations store all the functions
-
+export const authActions = authSlice.actions;
 export const store = configureStore({
-    reducer: authSlice.reducer,
-})
+  reducer: authSlice.reducer,
+});

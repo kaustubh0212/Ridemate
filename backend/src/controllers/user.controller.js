@@ -269,10 +269,41 @@ const getCurrentUser = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, req.user, "curret user fetched successfully"));
 });
 
+const logoutUser = asyncHandler(async(req, res) =>{
+    // Need to reset both access token and refresh token
+
+    // clearing cookie from database
+    
+    const updated = await User.findByIdAndUpdate(
+        req.user._id, // how to search
+        {
+            $set: {  // what to update
+                refreshToken: undefined,
+            }
+        },
+        { // to return new value of refreshToken
+            new: true
+        }
+    )
+
+    //console.log("updated:", updated);
+
+    const options = {
+        httpOnly: true,
+        secure: true
+    }
+
+    return res
+    .status(200)
+    .clearCookie("accessToken", options)  // clearing cookie from browser
+    .clearCookie("refreshToken", options)
+    .json(new ApiResponse(200, {}, "User logged out"))
+})
+
 export {
   registerUser,
   loginUser,
-  // logoutUser,
+  logoutUser,
   refreshAccessToken,
   // changeCurrentPassword,
   getCurrentUser,

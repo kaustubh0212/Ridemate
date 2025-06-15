@@ -19,29 +19,37 @@ const Login = () => {
   email: '',
   password: '',
   });
-/*
-  const checkUser = async () => {
-      try {
-        const { data } = await axios.get("/api/v1/users/current-user", {
-          withCredentials: true,
-        });
 
-        if (data.success) {
-          dispatch(authActions.login());
-          console.log("User auto-logged in!");
-        }
-      } catch (error) {
-        console.log("User not logged in", error.message);
-        dispatch(authActions.logout());
+
+  const fetchUser = async () => {
+    console.log("running FetchUser()")
+    try {
+      const { data } = await axios.get('/api/v1/users/current-user', {
+        withCredentials: true,
+      });
+
+      console.log("user data from FetchUser(): ", data)
+
+      if(data?.data)
+      {
+        dispatch(authActions.login(data.data));
+        /*
+        setAvatarUrl(data.avatar);
+        setUserName(data.user.name);
+        setUserData(data);
+        */
+        navigate("/")
       }
-    };
+    } catch (err) {
+      console.log("No cookies saved to get fetched by fetchUser()");
+    }
+  };
 
-    
-  useEffect(() =>
-  {
-    checkUser();
-  }, []);
-*/
+    useEffect(() => {
+      console.log("inside useEffect of FetchUser()");
+      if (!isLoggedIn) fetchUser();
+      console.log("current isLoggedIn status: ", isLoggedIn)
+    }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -54,7 +62,6 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("\nLogin status before submit: ", isLoggedIn);
     console.log('\nform data to go to backend: ', formData);
     try {
       const { data } = await axios.post('/api/v1/users/login', {
@@ -66,7 +73,7 @@ const Login = () => {
       console.log("data.success: ", data.success)
       if (data.success) {
         //localStorage.setItem("userId", data?.user._id);
-        dispatch(authActions.login());
+        await dispatch(authActions.login(data.data.user));
         toast.success('User Login Successfully');
         navigate('/');
       } else
@@ -77,21 +84,18 @@ const Login = () => {
     catch(error)
     {
       console.error("Error in catch block: \n", error);
-      console.log("error.response?.data?.message: ", error.response?.data?.message)
       const message = error.response?.data?.message || 'Login failed. Please try again.';
       toast.error(`Error: ${message}`);
     }
     finally
     {
-    /*setFormData({
+    setFormData({
       name: "",
       email: "",
       password: "",
-    })*/
+    })
 
-    console.log("\nLogin Status After Submission: ", isLoggedIn)
-  };
-  }
+  }}
 
   return (
     <Container maxWidth="sm">
