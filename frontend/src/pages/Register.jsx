@@ -2,10 +2,16 @@ import React, { useState } from 'react';
 import { Container, Box, Avatar, Typography, Button, IconButton, Divider } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import GoogleIcon from '@mui/icons-material/Google';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Input = styled('input')({ display: 'none' });
 
 const Register = () => {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -22,9 +28,50 @@ const Register = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
+    console.log('Frontend Data to be sent:\n', formData);
+
+    try {
+      const formDataToSend = new FormData();
+      formDataToSend.append('name', formData.name);
+      formDataToSend.append('email', formData.email);
+      formDataToSend.append('password', formData.password);
+      formDataToSend.append('phone', formData.phone);
+      formDataToSend.append('avatar', formData.avatar); // crucial for multer
+
+      if (!formData.avatar) {
+        toast.error('Please upload an avatar image');
+        return;
+      }
+
+      const { data } = await axios.post('/api/v1/users/register', formDataToSend, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+
+      console.log('Response: \n', data);
+
+      if (data.success) {
+        toast.success('User Registered Successfully');
+        navigate('/login');
+      } else {
+        toast.error(`Error: ${data.message}`);
+      }
+    } catch (error) {
+      console.error("Error in catch block: \n", error);
+      const message = error.response?.data?.message || 'Registration failed. Please try again.';
+      toast.error(`Error: ${message}`);
+    }
+    finally
+    {
+    setFormData({
+      name: "",
+      email: "",
+      password: "",
+      phone: "",
+      avatar: null
+    });
+  }
   };
 
   const getInitialAvatar = () => (formData.name ? formData.name[0].toUpperCase() : '?');
@@ -48,7 +95,7 @@ const Register = () => {
       >
         <label htmlFor="avatar-upload">
           <Input accept="image/*" id="avatar-upload" type="file" name="avatar" onChange={handleChange} />
-          <IconButton /*component="span"*/ sx={{ p: 0 }}>
+          <IconButton component="span" sx={{ p: 0 }}>
             <Avatar
               sx={{ width: 70, height: 70, bgcolor: '#555', fontSize: 26 }}
               src={formData.avatar ? URL.createObjectURL(formData.avatar) : ''}

@@ -1,0 +1,26 @@
+{
+  "name": "ridemate",
+  "version": "1.0.0",
+  "description": "Adding a README file",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "concurrently \"npm run dev --prefix frontend\" \"npm run dev --prefix backend\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kaustubh0212/Ridemate.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/kaustubh0212/Ridemate/issues"
+  },
+  "homepage": "https://github.com/kaustubh0212/Ridemate#readme",
+  "dependencies": {
+    "concurrently": "^9.1.2",
+    "react-toastify": "^11.0.5"
+  }
+}

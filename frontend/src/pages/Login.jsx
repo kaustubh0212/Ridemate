@@ -1,13 +1,47 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Box, Typography, Button, Divider } from '@mui/material';
 import GoogleIcon from '@mui/icons-material/Google';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { authActions } from '../redux/store.js';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Login = () => {
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const isLoggedIn = useSelector((state) => state.isLogin);
+
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
+  name: '',
+  email: '',
+  password: '',
   });
+/*
+  const checkUser = async () => {
+      try {
+        const { data } = await axios.get("/api/v1/users/current-user", {
+          withCredentials: true,
+        });
+
+        if (data.success) {
+          dispatch(authActions.login());
+          console.log("User auto-logged in!");
+        }
+      } catch (error) {
+        console.log("User not logged in", error.message);
+        dispatch(authActions.logout());
+      }
+    };
+
+    
+  useEffect(() =>
+  {
+    checkUser();
+  }, []);
+*/
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -18,10 +52,46 @@ const Login = () => {
     alert('Google Login will be integrated.');
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
+    console.log("\nLogin status before submit: ", isLoggedIn);
+    console.log('\nform data to go to backend: ', formData);
+    try {
+      const { data } = await axios.post('/api/v1/users/login', {
+        email: formData.email,
+        password: formData.password,
+        name: formData.name,
+      });
+      console.log('\nResponse coming back from backend: \n', data);
+      console.log("data.success: ", data.success)
+      if (data.success) {
+        //localStorage.setItem("userId", data?.user._id);
+        dispatch(authActions.login());
+        toast.success('User Login Successfully');
+        navigate('/');
+      } else
+      {
+        toast.error(`Error: ${data.message}`);
+      }
+    }
+    catch(error)
+    {
+      console.error("Error in catch block: \n", error);
+      console.log("error.response?.data?.message: ", error.response?.data?.message)
+      const message = error.response?.data?.message || 'Login failed. Please try again.';
+      toast.error(`Error: ${message}`);
+    }
+    finally
+    {
+    /*setFormData({
+      name: "",
+      email: "",
+      password: "",
+    })*/
+
+    console.log("\nLogin Status After Submission: ", isLoggedIn)
   };
+  }
 
   return (
     <Container maxWidth="sm">
@@ -45,7 +115,9 @@ const Login = () => {
 
         <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1, width: '100%' }}>
           <Box sx={{ mb: 2 }}>
-            <label><strong>Name</strong></label>
+            <label>
+              <strong>Name</strong>
+            </label>
             <input
               required
               name="name"
@@ -62,7 +134,9 @@ const Login = () => {
           </Box>
 
           <Box sx={{ mb: 2 }}>
-            <label><strong>Email</strong></label>
+            <label>
+              <strong>Email</strong>
+            </label>
             <input
               required
               type="email"
@@ -80,7 +154,9 @@ const Login = () => {
           </Box>
 
           <Box sx={{ mb: 2 }}>
-            <label><strong>Password</strong></label>
+            <label>
+              <strong>Password</strong>
+            </label>
             <input
               required
               type="password"
@@ -151,4 +227,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Login

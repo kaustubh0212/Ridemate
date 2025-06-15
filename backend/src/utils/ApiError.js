@@ -4,8 +4,8 @@ class ApiError extends Error {
         message = "Something went wrong",
         errors = [],
         stack  = ""
-    ){  // overwritng the details
-        super(message) // super(message) is used inside a class constructor to call the parent class's constructor (Error in this case).
+    ){
+        super(message)
         this.statusCode = statusCode
         this.data = null
         this.message = message
