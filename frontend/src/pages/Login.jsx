@@ -12,7 +12,7 @@ const Login = () => {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const isLoggedIn = useSelector((state) => state.isLogin);
+  const isLoggedIn = useSelector((state) => state.auth.isLogin);
 
   const [formData, setFormData] = useState({
   name: '',

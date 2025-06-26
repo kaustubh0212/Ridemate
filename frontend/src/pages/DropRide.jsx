@@ -1,28 +1,20 @@
 // src/pages/DropRide.jsx
 import React, { useRef, useState, useEffect } from 'react';
-import {
-  Box,
-  Button,
-  Stack,
-  TextField,
-  Typography,
-  InputAdornment,
-} from '@mui/material';
+import { Box, Button, Stack, TextField, Typography, InputAdornment } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useNavigate } from 'react-router-dom';
-import {
-  GoogleMap,
-  Marker,
-  useJsApiLoader,
-  DirectionsService,
-  DirectionsRenderer,
-} from '@react-google-maps/api';
+import { GoogleMap, Marker, useJsApiLoader, DirectionsService, DirectionsRenderer } from '@react-google-maps/api';
+import axios from 'axios';
+import { useDispatch, useSelector } from 'react-redux';
 
 const libraries = ['places'];
 const containerStyle = { width: '100%', height: '100%' };
 
 const DropRide = () => {
   const navigate = useNavigate();
+
+  const { isLoggedIn, userData } = useSelector((state) => state.auth);
+
 
   const [pickup, setPickup] = useState(null);
   const [drop, setDrop] = useState(null);
@@ -60,7 +52,7 @@ const DropRide = () => {
               lat: place.geometry.location.lat(),
               lng: place.geometry.location.lng(),
             });
-            setBoundsApplied(false); // Reset fitBounds trigger
+            setBoundsApplied(false);
           }
         });
       });
@@ -84,8 +76,6 @@ const DropRide = () => {
     }
   }, [pickup, drop, map, boundsApplied]);
 
-  const handleSubmit = () => navigate('/login');
-
   const onMapLoad = (m) => {
     setMap(m);
     if (mapLoaded.current) return;
@@ -104,6 +94,54 @@ const DropRide = () => {
 
   const today = new Date().toISOString().split('T')[0];
   const nowTime = new Date().toTimeString().slice(0, 5);
+
+  const handleSubmit = async () => {
+    console.log("isloggedIn: ", isLoggedIn)
+    console.log("userData: ", userData)
+    if(!isLoggedIn || userData == null)
+    {
+      navigate('/login')
+    }
+
+    if (!pickup || !drop || !departureDate || !departureTime || !amount || !maxPeople) {
+      alert('Please fill all required fields');
+      return;
+    }
+
+    try {
+      const rideData = {
+        pickupLocation: {
+          name: pickupRef.current.value,
+          coordinates: { ...pickup },
+        },
+        dropLocation: {
+          name: dropRef.current.value,
+          coordinates: { ...drop },
+        },
+        departureDate,
+        departureTime,
+        totalSeats: Number(maxPeople),
+        seatsLeft: Number(maxPeople),
+        amountToPay: Number(amount),
+        carDetails,
+      };
+
+      const { data } = await axios.post('/api/v1/rides/drop-ride', rideData, {
+        withCredentials: true,
+      });
+
+      console.log('Ride successfully dropped:', data);
+      alert('Ride dropped successfully!');
+      navigate('/');
+    } catch (error) {
+      console.log('Error while dropping ride:', error);
+      if(isLoggedIn && userData != null)
+      {
+        alert('Something went wrong while submitting the ride.')
+      }
+
+    }
+  };
 
   if (!isLoaded) return <div>Loading…</div>;
 
@@ -190,7 +228,7 @@ const DropRide = () => {
               options={{
                 directions,
                 suppressMarkers: false,
-                preserveViewport: true, // prevent bouncing
+                preserveViewport: true,
               }}
             />
           )}

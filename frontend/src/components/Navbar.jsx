@@ -29,8 +29,8 @@ const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const isLoggedIn = useSelector((state) => state.isLogin);
-  const userData = useSelector((state) => state.user);
+  const isLoggedIn = useSelector((state) => state.auth.isLogin);
+  const userData = useSelector((state) => state.auth.user);
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState('');

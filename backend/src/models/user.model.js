@@ -2,58 +2,69 @@ import mongoose, {Schema} from "mongoose";
 import bcrypt from "bcrypt" 
 import jwt from "jsonwebtoken"
 
+const userSchema = new Schema(
+  {
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      trim: true,
+    },
 
-const userSchema =  new Schema(
-    {
-        email: {
-            type: String,
-            required: true,
-            unique: true,
-            lowercase: true,
-            trim: true,
-        },
+    phone: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+      match: [/^\d{10}$/, 'Phone number must be exactly 10 digits'],
+    },
 
-        phone: {
-        type: String,
-        required: true,
-        unique: true,
-        trim: true,
-        match: [/^\d{10}$/, 'Phone number must be exactly 10 digits'],
-        },
+    name: {
+      type: String,
+      required: true,
+      trim: true,
+      index: true,
+    },
 
+    avatar: {
+      type: String,
+      required: true, // Cloudinary URL
+    },
 
-        name: {
-            type: String,
-            required: true,
-            trim: true,
-            index: true
-        },
+    password: {
+      type: String,
+      required: [true, 'Password is required'],
+    },
 
-        avatar: {
-            type: String, // cloudanary URL: uploadingavatar on a third party site which will store it and return a URLto backend
-            required: true,
-        },
+    refreshToken: {
+      type: String,
+    },
 
-        /*
-        watchHistory:  // Array
-        [
-            {
-                type: Schema.Types.ObjectId,  // Holds the unique ID of a video.
-                ref: "Video"  // Tells MongoDB that "Video" is a schema model where all videos (with their IDs) are stored.
-            }
-        ],
-        */
+    // ✅ New Fields
+    searchRides: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Ride', // Assuming your ride model is named 'Ride'
+      },
+    ],
 
-        password: {
-            type: String,
-            required: [true, 'Password id required']
-        },
+    dropRide: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Ride',
+      },
+    ],
 
-        refreshToken: {
-            type: String,
-        }
-
-}, {timestamps: true})
+    requestedRide: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Ride',
+      },
+    ],
+  },
+  { timestamps: true }
+);
 
 
 userSchema.pre("save", async function (next) {
@@ -95,3 +106,50 @@ userSchema.methods.generateRefreshToken = function(){
 }
 
 export const User = mongoose.model("User", userSchema)
+
+
+
+/*
+old user schema
+const userSchema =  new Schema(
+    {
+        email: {
+            type: String,
+            required: true,
+            unique: true,
+            lowercase: true,
+            trim: true,
+        },
+
+        phone: {
+        type: String,
+        required: true,
+        unique: true,
+        trim: true,
+        match: [/^\d{10}$/, 'Phone number must be exactly 10 digits'],
+        },
+
+
+        name: {
+            type: String,
+            required: true,
+            trim: true,
+            index: true
+        },
+
+        avatar: {
+            type: String, // cloudanary URL: uploadingavatar on a third party site which will store it and return a URLto backend
+            required: true,
+        },
+
+        password: {
+            type: String,
+            required: [true, 'Password id required']
+        },
+
+        refreshToken: {
+            type: String,
+        }
+
+}, {timestamps: true})
+*/

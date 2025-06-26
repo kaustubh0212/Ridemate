@@ -8,6 +8,8 @@ import AboutUs from "./pages/AboutUs";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import DropRide from "./pages/DropRide";
+import YourRides from "./pages/yourRides";
+import SearchRide from "./pages/SearchRide"
 import { ToastContainer } from "react-toastify";
 
 const App = () => {
@@ -30,6 +32,8 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/drop-ride" element={<DropRide />} />
+        <Route path="/your-rides" element={<YourRides />} />
+        <Route path="/find-ride" element={<SearchRide />} />
       </Routes>
       <ToastContainer position="top-center" />
     </>
