@@ -25,6 +25,7 @@ const SearchRide = () => {
   const [pickup, setPickup] = useState(null);
   const [drop, setDrop] = useState(null);
   const [rides, setRides] = useState([]);
+  const [requestedRides, setRequestedRides] = useState([]);
 
   const isLoggedIn = useSelector((state) => state.auth.isLogin);
 
@@ -85,6 +86,26 @@ const SearchRide = () => {
     }
   };
 
+const handleRequest = async (rideId) => {
+  if (!isLoggedIn) return navigate('/login');
+  
+  try {
+    const { data } = await axios.post(
+      `/api/v1/rides/requestRide/${rideId}`,
+      {}, // no body needed
+      { withCredentials: true }
+    );
+    
+    setRequestedRides((prev) => [...prev, rideId]);
+    toast.success(data.message || 'Request sent!');
+
+  } catch (err) {
+    console.error(err);
+    toast.error(err.response?.data?.message || 'Request failed');
+  }
+};
+
+
   if (!isLoaded) return <div>Loading Maps...</div>;
 
   return (
@@ -128,11 +149,12 @@ const SearchRide = () => {
                 <Typography><strong>Car:</strong> {ride.carDetails || 'N/A'}</Typography>
                 <Typography><strong>Seats Left:</strong> {ride.seatsLeft}</Typography>
                 <Button
-                  onClick={() => toast.success('Request sent!')}
+                  onClick = {() => handleRequest(ride._id)}
                   variant="outlined"
                   sx={{ mt: 1 }}
+                  disabled={requestedRides.includes(ride._id)}
                 >
-                  Request
+                  {requestedRides.includes(ride._id) ? 'Requested' : 'Request'}
                 </Button>
               </Paper>
             ))

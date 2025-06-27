@@ -3,6 +3,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { ApiError } from "../utils/ApiError.js";
 //import jwt from "jsonwebtoken";
 import Ride from "../models/ride.model.js";
+import User from "../models/user.model.js"
 //import { getCurrentUser } from '../controllers/user.controller.js'
 import mongoose from 'mongoose';
 import { getDistance } from 'geolib';
@@ -152,6 +153,8 @@ const getAllDroppedRides = asyncHandler(async (req, res) => {
   // STEP 1: Query rides based on pickup location only
 const initialRides = await Ride.find({
   admin: { $ne: userId },
+  joinedUser: { $nin: [userId] },
+  requestedUser: { $nin: [userId] },
   seatsLeft: { $gt: 0 },
   status: 'pending', // ✅ Only active rides
   'pickupLocation.coordinates': {
@@ -160,13 +163,13 @@ const initialRides = await Ride.find({
         type: 'Point',
         coordinates: pickupCoords,
       },
-      $maxDistance: 10000,
+      $maxDistance: 3000,
     },
   },
 });
 
   // STEP 2: Filter by drop location (either coordinates or name)
-  const MAX_DROP_DISTANCE = 10000; // 10 km
+  const MAX_DROP_DISTANCE = 3000; // 10 km
   const filteredRides = initialRides.filter((ride) => {
     const rideDrop = ride.dropLocation;
 
@@ -265,6 +268,32 @@ const dropRide = asyncHandler(async (req, res) => {
   );
 });
 
+const requestRide = asyncHandler(async (req, res) => {
+  const rideId = req.params.rideId;
+  const userId = req.user._id;
+
+  const ride = await Ride.findById(rideId);
+  if (!ride) {
+    return res.status(404).json({ success: false, message: 'Ride not found' });
+  }
+
+  if (ride.requestedUser.includes(userId) || ride.joinedUser.includes(userId)) {
+    return res.status(400).json({ success: false, message: 'Already requested or joined' });
+  }
+
+  ride.requestedUser.push(userId);
+  //const k = ride.seatsLeft - 1;
+  //ride.seatsLeft = k;
+  await ride.save();
+
+  const user = await User.findById(userId);
+  user.requestedRide.push(rideId);
+  await user.save();
+
+  return res.status(200).json({ success: true, message: 'Request sent' });
+});
+
+
 
 
 export {
@@ -272,5 +301,6 @@ export {
   //getCurrentUser,
   getAllDroppedRidesById,
   //getAllSearchedRides,
-  getAllDroppedRides
+  getAllDroppedRides,
+  requestRide
 };
