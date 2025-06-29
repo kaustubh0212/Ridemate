@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { verifyJWT } from '../middlewares/auth.middleware.js'
-import{ dropRide, getAllDroppedRides, getAllDroppedRidesById, requestRide } from '../controllers/ride.controller.js'
+import{ dropRide, getAllDroppedRides, getAllDroppedRidesById, requestRide, getAllSearchedRidesById, moveOutOfRide } from '../controllers/ride.controller.js'
 
 
 const router = Router()
@@ -13,6 +13,8 @@ const router = Router()
 router.route("/drop-ride").post(verifyJWT, dropRide)
 //router.route("/current-user").get(verifyJWT, getCurrentUser)
 router.route("/dropped-rides").get(verifyJWT, getAllDroppedRidesById)
+router.route("/searched-rides").get(verifyJWT, getAllSearchedRidesById)
 router.route("/searchRides").get(verifyJWT, getAllDroppedRides)
 router.route("/requestRide/:rideId").post(verifyJWT, requestRide)
+router.route("/move-out/:rideId").post(verifyJWT, moveOutOfRide)
 export default router

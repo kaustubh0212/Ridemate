@@ -1,17 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import {
-  Box,
-  Button,
-  Typography,
-  Divider,
-  Stack,
-  Chip,
-  useMediaQuery,
-  useTheme,
-} from '@mui/material';
+import { Box, Button, Typography, Divider, Stack, Chip, useMediaQuery, useTheme } from '@mui/material';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+const pickupDropStyle = {
+  width: '15%',
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  maxWidth: '180px',
+};
+
+const buttonStyle = {
+  textTransform: 'none',
+  fontSize: '0.75rem',
+};
 
 const YourRides = () => {
   const navigate = useNavigate();
@@ -36,7 +42,7 @@ const YourRides = () => {
 
   const fetchSearchedRides = async () => {
     try {
-      const { data } = await axios.get('/api/v1/rides/searched', {
+      const { data } = await axios.get('/api/v1/rides/searched-rides', {
         withCredentials: true,
       });
       setSearchedRides(data.rides);
@@ -45,12 +51,24 @@ const YourRides = () => {
     }
   };
 
+  const handleMoveOut = async (rideId) => {
+    try {
+      await axios.post(`/api/v1/rides/move-out/${rideId}`, {}, { withCredentials: true });
+      toast.success('You have Moved Out Successfully');
+      fetchSearchedRides();
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to move out of the ride');
+    }
+  };
+
   useEffect(() => {
     fetchDroppedRides();
     fetchSearchedRides();
   }, []);
 
-  const renderRideRow = (ride, index, isDropped) => {
+
+  const renderDroppedRideRow = (ride, index) => {
     const bgColor = index % 2 === 0 ? '#ededed' : '#ffffff';
 
     return (
@@ -67,67 +85,72 @@ const YourRides = () => {
           gap: 1,
         }}
       >
-        <Typography sx={{ width: isMobile ? '100%' : '5%' }}>{index + 1}</Typography>
-
-        <Typography
-          sx={{
-            width: isMobile ? '100%' : '15%',
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-          }}
-          title={ride.pickupLocation.name}
-        >
+        <Typography sx={{ width: '5%' }}>{index + 1}</Typography>
+        <Typography sx={pickupDropStyle} title={ride.pickupLocation.name}>
           {ride.pickupLocation.name}
         </Typography>
-
-        <Typography
-          sx={{
-            width: isMobile ? '100%' : '15%',
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-          }}
-          title={ride.dropLocation.name}
-        >
+        <Typography sx={pickupDropStyle} title={ride.dropLocation.name}>
           {ride.dropLocation.name}
         </Typography>
-
-        <Typography sx={{ width: isMobile ? '100%' : '10%' }}>{ride.departureDate}</Typography>
-        <Typography sx={{ width: isMobile ? '100%' : '10%' }}>{ride.departureTime}</Typography>
-
-        <Box sx={{ width: isMobile ? '100%' : '10%' }}>
+        <Typography sx={{ width: '10%' }}>{ride.departureDate}</Typography>
+        <Typography sx={{ width: '%' }}>{ride.departureTime}</Typography>
+        <Box sx={{ width: '11%' }}>
           <Chip
             label={ride.status}
-            color={
-              ride.status === 'pending'
-                ? 'warning'
-                : ride.status === 'completed'
-                ? 'success'
-                : 'error'
-            }
+            color={ride.status === 'pending' ? 'warning' : ride.status === 'completed' ? 'success' : 'error'}
           />
         </Box>
-
-        <Typography sx={{ width: isMobile ? '100%' : '15%' }}>
-          {isDropped
-            ? `${ride.joinedUser?.length || 0} joined`
-            : ride.requestStatus || 'Pending'}
-        </Typography>
-
-        <Box sx={{ width: isMobile ? '100%' : '10%' }}>
-          <Button
-            variant="outlined"
-            fullWidth
-            onClick={() => navigate(`/ride/${ride._id}`)}
-            sx={{
-              color: '#000',
-              borderColor: '#000',
-              textTransform: 'none',
-              fontSize: '0.875rem',
-            }}
-          >
+        <Typography sx={{ width: '8%' }}>{`${ride.joinedUser?.length || 0} joined`}</Typography>
+        <Box sx={{ width: '15%' }}>
+          <Button variant="outlined" fullWidth onClick={() => navigate(`/ride/${ride._id}`)} sx={buttonStyle}>
             More Details
+          </Button>
+        </Box>
+      </Box>
+    );
+  };
+
+  const renderSearchedRideRow = (ride, index) => {
+    const bgColor = index % 2 === 0 ? '#ededed' : '#ffffff';
+
+    return (
+      <Box
+        key={ride._id}
+        sx={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          p: 2,
+          backgroundColor: bgColor,
+          borderBottom: '1px solid #ccc',
+          gap: 1,
+        }}
+      >
+        <Typography sx={{ width: '5%' }}>{index + 1}</Typography>
+        <Typography sx={pickupDropStyle} title={ride.pickupLocation.name}>
+          {ride.pickupLocation.name}
+        </Typography>
+        <Typography sx={pickupDropStyle} title={ride.dropLocation.name}>
+          {ride.dropLocation.name}
+        </Typography>
+        <Typography sx={{ width: '10%' }}>{ride.departureDate}</Typography>
+        <Typography sx={{ width: '10%' }}>{ride.departureTime}</Typography>
+        <Box sx={{ width: '10%' }}>
+          <Chip
+            label={ride.status}
+            color={ride.status === 'pending' ? 'warning' : ride.status === 'completed' ? 'success' : 'error'}
+          />
+        </Box>
+        <Typography sx={{ width: '10%' }}>{ride.requestStatus || 'Pending'}</Typography>
+        <Box sx={{ width: '10%' }}>
+          <Button variant="outlined" fullWidth color="error" onClick={() => handleMoveOut(ride._id)} sx={buttonStyle}>
+            Move Out
+          </Button>
+        </Box>
+        <Box sx={{ width: '10%' }}>
+          <Button variant="contained" fullWidth onClick={() => navigate(`/chat/${ride._id}`)} sx={buttonStyle}>
+            Chat
           </Button>
         </Box>
       </Box>
@@ -178,12 +201,15 @@ const YourRides = () => {
         <Typography sx={{ width: isMobile ? '100%' : '15%' }}>Pickup</Typography>
         <Typography sx={{ width: isMobile ? '100%' : '15%' }}>Drop</Typography>
         <Typography sx={{ width: isMobile ? '100%' : '10%' }}>Date</Typography>
-        <Typography sx={{ width: isMobile ? '100%' : '10%' }}>Time</Typography>
-        <Typography sx={{ width: isMobile ? '100%' : '10%' }}>Status</Typography>
-        <Typography sx={{ width: isMobile ? '100%' : '15%' }}>
+        <Typography sx={{ width: isMobile ? '100%' : '12%' }}>Time</Typography>
+        <Typography sx={{ width: isMobile ? '100%' : '9.5%' }}>Status</Typography>
+        <Typography sx={{ width: isMobile ? '100%' : '13%' }}>
           {viewType === 'dropped' ? 'People Joined' : 'Request Status'}
         </Typography>
-        <Typography sx={{ width: isMobile ? '100%' : '10%' }}>Action</Typography>
+        <Typography sx={{ width: isMobile ? '100%' : '10%' }}>
+          {viewType === 'dropped' ? 'Details' : 'Move Out'}
+        </Typography>
+        {viewType === 'searched' && <Typography sx={{ width: isMobile ? '100%' : '10%' }}>Chat</Typography>}
       </Box>
 
       <Divider sx={{ backgroundColor: '#ccc', mb: 1 }} />
@@ -194,7 +220,7 @@ const YourRides = () => {
         </Typography>
       ) : (
         ridesToDisplay.map((ride, index) =>
-          renderRideRow(ride, index, viewType === 'dropped')
+          viewType === 'dropped' ? renderDroppedRideRow(ride, index) : renderSearchedRideRow(ride, index)
         )
       )}
     </Box>
