@@ -80,7 +80,7 @@ const Navbar = () => {
   const handleLogout = async () => {
     try {
       await axios.post('/api/v1/users/logout', {}, { withCredentials: true });
-      await dispatch(authActions.logout());
+      dispatch(authActions.logout());
       navigate('/login');
     } catch (err) {
       console.error('Logout failed:', err);

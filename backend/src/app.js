@@ -1,7 +1,6 @@
 import express from "express"
 import cors from "cors"
 import cookieParser from "cookie-parser"
-import { errorHandler } from "./middlewares/convertErrorToJson.js"
 
 const app = express()
 

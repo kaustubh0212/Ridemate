@@ -102,7 +102,7 @@ const YourRides = () => {
         </Box>
         <Typography sx={{ width: '8%' }}>{`${ride.joinedUser?.length || 0} joined`}</Typography>
         <Box sx={{ width: '15%' }}>
-          <Button variant="outlined" fullWidth onClick={() => navigate(`/ride/${ride._id}`)} sx={buttonStyle}>
+          <Button variant="outlined" fullWidth onClick={() => navigate(`/dropRide-details/${ride._id}`)} sx={buttonStyle}>
             More Details
           </Button>
         </Box>

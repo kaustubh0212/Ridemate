@@ -29,6 +29,7 @@ const getAllDroppedRidesById = asyncHandler(async (req, res) => {
   });
 })
 
+
 const moveOutOfRide = asyncHandler(async (req, res) => {
   const userId = req.user._id;
   const rideId = req.params.rideId;
@@ -178,84 +179,6 @@ const initialRides = await Ride.find({
   );
 });
 
-/*
-const dropRide = asyncHandler(async (req, res) => {
-  const {
-    pickupLocation,
-    dropLocation,
-    departureDate,
-    departureTime,
-    totalSeats,
-    seatsLeft,
-    amountToPay,
-    carDetails,
-  } = req.body;
-
-  console.log("req.body drop ride data: ", req.body);
-
-  if (
-    !pickupLocation?.name ||
-    pickupLocation?.coordinates?.lat === undefined ||
-    pickupLocation?.coordinates?.lng === undefined ||
-    !dropLocation?.name ||
-    dropLocation?.coordinates?.lat === undefined ||
-    dropLocation?.coordinates?.lng === undefined ||
-    !departureDate ||
-    !departureTime ||
-    !totalSeats ||
-    seatsLeft === undefined ||
-    amountToPay === undefined
-  ) {
-    return res.status(400).json({
-      success: false,
-      message: 'Please fill all required fields',
-    });
-  }
-
-  const user = req.user;
-  if (!user || !user._id) {
-    return res.status(401).json({
-      success: false,
-      message: 'Unauthorized. User data not found.',
-    });
-  }
-
-  const ride = await Ride.create({
-    user: user._id,
-    admin: user._id,
-    joinedUser: [],
-    requestedUser: [],
-    pickupLocation: {
-      type: 'Point',
-      name: pickupLocation.name,
-      coordinates: [pickupLocation.coordinates.lng, pickupLocation.coordinates.lat],
-    },
-    dropLocation: {
-      type: 'Point',
-      name: dropLocation.name,
-      coordinates: [dropLocation.coordinates.lng, dropLocation.coordinates.lat],
-    },
-    departureDate,
-    departureTime,
-    totalSeats,
-    seatsLeft,
-    amountToPay,
-    carDetails: carDetails?.trim() || '',
-    status: 'pending',
-  });
-
-  const createdRide = await Ride.findById(ride._id);
-
-  if (!createdRide) {
-    throw new ApiError(500, "Something went wrong while creating the ride");
-  }
-
-  return res.status(201).json(
-    new ApiResponse(200, createdRide, "Ride created successfully")
-  );
-});
-*/
-
 
 const dropRide = asyncHandler(async (req, res) => {
   const {
@@ -387,6 +310,118 @@ const requestRide = asyncHandler(async (req, res) => {
   return res.status(200).json({ success: true, message: 'Request sent' });
 });
 
+const completeRideDetails = asyncHandler(async (req, res) => {
+  const rideId = req.params.rideId;
+  const userId = req.user._id;
+
+  // Validate rideId format
+  if (!mongoose.Types.ObjectId.isValid(rideId)) {
+    throw new ApiError(400, "Invalid ride ID");
+  }
+
+  const ride = await Ride.findById(rideId)
+    .populate('admin', 'name email avatar')
+    .populate('joinedUser', 'name email avatar')
+    .populate('requestedUser', 'name email avatar');
+
+  if (!ride) {
+    throw new ApiError(404, "Ride not found");
+  }
+
+  // Ensure only the ride creator (admin) can view full ride details
+  if (ride.admin._id.toString() !== userId.toString()) {
+    throw new ApiError(403, "Access denied. Only ride owner can view details.");
+  }
+
+  return res.status(200).json(
+    new ApiResponse(200, {
+      rideDetails: {
+        _id: ride._id,
+        pickupLocation: ride.pickupLocation,
+        dropLocation: ride.dropLocation,
+        departureDate: ride.departureDate,
+        departureTime: ride.departureTime,
+        totalSeats: ride.totalSeats,
+        seatsLeft: ride.seatsLeft,
+        amountToPay: ride.amountToPay,
+        status: ride.status,
+        carDetails: ride.carDetails,
+        admin: ride.admin,
+      },
+      joinedUsers: ride.joinedUser || [],
+      requestedUsers: ride.requestedUser || [],
+    }, "Ride details fetched successfully")
+  );
+});
+
+
+const acceptRequest = asyncHandler(async (req, res) => {
+  const rideId = req.params.rideId;
+  const userIdToAccept = req.params.userId;
+
+  // Validate rideId and userId
+  if (!mongoose.Types.ObjectId.isValid(rideId) || !mongoose.Types.ObjectId.isValid(userIdToAccept)) {
+    throw new ApiError(400, 'Invalid ride ID or user ID');
+  }
+
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+    const ride = await Ride.findById(rideId).session(session);
+    const user = await User.findById(userIdToAccept).session(session);
+
+    if (!ride || !user) {
+      throw new ApiError(404, 'Ride or user not found');
+    }
+
+    if (ride.status === 'cancelled') {
+      throw new ApiError(400, 'Cannot join a cancelled ride');
+    }
+
+    if (!ride.requestedUser.includes(userIdToAccept)) {
+      throw new ApiError(400, 'User has not requested to join this ride');
+    }
+
+    if (ride.joinedUser.includes(userIdToAccept)) {
+      throw new ApiError(400, 'User already joined the ride');
+    }
+
+    if (ride.seatsLeft <= 0) {
+      throw new ApiError(400, 'No seats left');
+    }
+
+    // Update Ride model
+    ride.requestedUser = ride.requestedUser.filter(
+      (id) => id.toString() !== userIdToAccept.toString()
+    );
+    ride.joinedUser.push(userIdToAccept);
+    ride.seatsLeft -= 1;
+    await ride.save({ session });
+
+    // Update User model
+    user.requestedRide = user.requestedRide.filter(
+      (id) => id.toString() !== rideId.toString()
+    );
+    user.searchRides.push(rideId);
+    await user.save({ session });
+
+    await session.commitTransaction();
+    session.endSession();
+
+    return res
+      .status(200)
+      .json(new ApiResponse(200, null, 'User successfully added to ride'));
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+    console.error('Transaction failed:', error);
+    throw new ApiError(500, 'Failed to accept request. All changes reverted.');
+  }
+});
+
+
+
 
 
 
@@ -397,5 +432,7 @@ export {
   getAllSearchedRidesById,
   getAllDroppedRides,
   requestRide,
-  moveOutOfRide
+  moveOutOfRide,
+  completeRideDetails,
+  acceptRequest,
 };
