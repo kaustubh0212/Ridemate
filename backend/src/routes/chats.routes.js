@@ -4,6 +4,6 @@ import { getChatMessages } from '../controllers/chat.controller.js'
 
 const router = Router()
 
-router.get('/:rideId', verifyJWT, getChatMessages);
+router.get('/get-messages/:rideId', verifyJWT, getChatMessages);
 
 export default router

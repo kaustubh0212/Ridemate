@@ -8,7 +8,8 @@ import User from "../models/user.model.js";
 
 // to check wether uer is logined or not
 // next : job done, move to next step
-export const verifyJWT = asyncHandler( async(req, res, next) =>{
+export const verifyJWT = asyncHandler( async(req, res, next) =>
+{
     try {
         // trying to fetch token from browser. If user is logged in, access token exist else doesn't exist.
         // Check cookieParser in app.js for details

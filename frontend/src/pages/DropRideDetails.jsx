@@ -17,7 +17,7 @@ const RideManage = () => {
 
   useEffect(() => {
   socket.on('connect', () => {
-    console.log('✅ Connected to socket:', socket.id);
+    console.log('User Connected To Socket:', socket.id);
   });
 
   return () => {
@@ -38,8 +38,9 @@ const RideManage = () => {
 
   const fetchMessages = async () => {
     try {
-      const { data } = await axios.get(`/api/v1/rides/get-messages/${rideId}`, { withCredentials: true });
-      setMessages(data.messages);
+      const { data } = await axios.get(`/api/v1/chats/get-messages/${rideId}`, { withCredentials: true });
+      setMessages(data.data);
+      console.log("messages data: ", data)
     } catch {
       toast.error('Failed to load messages');
     }

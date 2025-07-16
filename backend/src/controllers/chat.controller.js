@@ -2,11 +2,12 @@ import { asyncHandler } from '../utils/asyncHandler.js';
 import { ApiError } from '../utils/ApiError.js';
 import { ApiResponse } from '../utils/ApiResponse.js';
 import { ChatMessage } from '../models/chatMessage.model.js';
+import mongoose  from 'mongoose'
 
 const getChatMessages = asyncHandler(async (req, res) => {
   const { rideId } = req.params;
 
-  if (!mongoose.Types.ObjectId.isValid(rideId)) {
+  if(!mongoose.Types.ObjectId.isValid(rideId)) {
     throw new ApiError(400, 'Invalid ride ID');
   }
 

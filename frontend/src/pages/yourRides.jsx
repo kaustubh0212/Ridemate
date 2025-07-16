@@ -5,6 +5,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ChatPopup from '../pages/chatPopup';
 
 const pickupDropStyle = {
   width: '15%',
@@ -20,13 +21,13 @@ const buttonStyle = {
 };
 
 const YourRides = () => {
-  const navigate = useNavigate();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const [viewType, setViewType] = useState('dropped');
   const [droppedRides, setDroppedRides] = useState([]);
   const [searchedRides, setSearchedRides] = useState([]);
+  const [openChat, setOpenChat] = useState(null); // 👈 chat popup ride ID
   const { user } = useSelector((state) => state.auth);
 
   const fetchDroppedRides = async () => {
@@ -46,6 +47,7 @@ const YourRides = () => {
         withCredentials: true,
       });
       setSearchedRides(data.rides);
+      console.log(data);
     } catch (error) {
       console.error('Failed to fetch searched rides:', error);
     }
@@ -67,6 +69,13 @@ const YourRides = () => {
     fetchSearchedRides();
   }, []);
 
+  const handleChatClick = (rideId) => {
+    setOpenChat(rideId);
+  };
+
+  const handleCloseChat = () => {
+    setOpenChat(null);
+  };
 
   const renderDroppedRideRow = (ride, index) => {
     const bgColor = index % 2 === 0 ? '#ededed' : '#ffffff';
@@ -93,7 +102,7 @@ const YourRides = () => {
           {ride.dropLocation.name}
         </Typography>
         <Typography sx={{ width: '10%' }}>{ride.departureDate}</Typography>
-        <Typography sx={{ width: '%' }}>{ride.departureTime}</Typography>
+        <Typography sx={{ width: '10%' }}>{ride.departureTime}</Typography>
         <Box sx={{ width: '11%' }}>
           <Chip
             label={ride.status}
@@ -102,7 +111,12 @@ const YourRides = () => {
         </Box>
         <Typography sx={{ width: '8%' }}>{`${ride.joinedUser?.length || 0} joined`}</Typography>
         <Box sx={{ width: '15%' }}>
-          <Button variant="outlined" fullWidth onClick={() => navigate(`/dropRide-details/${ride._id}`)} sx={buttonStyle}>
+          <Button
+            variant="outlined"
+            fullWidth
+            onClick={() => navigate(`/dropRide-details/${ride._id}`)}
+            sx={buttonStyle}
+          >
             More Details
           </Button>
         </Box>
@@ -149,7 +163,13 @@ const YourRides = () => {
           </Button>
         </Box>
         <Box sx={{ width: '10%' }}>
-          <Button variant="contained" fullWidth onClick={() => navigate(`/chat/${ride._id}`)} sx={buttonStyle}>
+          <Button
+            variant="contained"
+            fullWidth
+            onClick={() => handleChatClick(ride._id)}
+            sx={buttonStyle}
+            disabled={ride.requestStatus === 'Pending'} // 👈 disable if Pending
+          >
             Chat
           </Button>
         </Box>
@@ -161,7 +181,6 @@ const YourRides = () => {
 
   return (
     <Box sx={{ p: 4, backgroundColor: '#fff', color: '#000', minHeight: '100vh' }}>
-      {/* Top buttons */}
       <Stack direction="row" spacing={2} mb={4}>
         <Button
           variant={viewType === 'dropped' ? 'contained' : 'outlined'}
@@ -179,12 +198,10 @@ const YourRides = () => {
         </Button>
       </Stack>
 
-      {/* Header */}
       <Typography variant="h5" fontWeight="bold" gutterBottom>
         {viewType === 'dropped' ? 'Dropped Ride Details' : 'Searched Ride Details'}
       </Typography>
 
-      {/* Column Titles */}
       <Box
         sx={{
           display: 'flex',
@@ -223,6 +240,9 @@ const YourRides = () => {
           viewType === 'dropped' ? renderDroppedRideRow(ride, index) : renderSearchedRideRow(ride, index)
         )
       )}
+
+      {/* 👇 Conditionally Render ChatPopup */}
+      {openChat && <ChatPopup rideId={openChat} currentUser={user} onClose={handleCloseChat} />}
     </Box>
   );
 };

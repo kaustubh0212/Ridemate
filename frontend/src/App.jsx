@@ -11,6 +11,7 @@ import DropRide from "./pages/DropRide";
 import YourRides from "./pages/yourRides";
 import SearchRide from "./pages/SearchRide"
 import DropRideDetails from "./pages/DropRideDetails"
+//import ChatPopup from "./pages/chatPopup";
 import { ToastContainer } from "react-toastify";
 
 const App = () => {
@@ -35,6 +36,7 @@ const App = () => {
         <Route path="/drop-ride" element={<DropRide />} />
         <Route path="/your-rides" element={<YourRides />} />
         <Route path="/dropRide-details/:rideId" element={<DropRideDetails />} />
+        {/* <Route path="/rideChat/:rideId" element={<ChatPopup />} /> */}
         <Route path="/find-ride" element={<SearchRide />} />
       </Routes>
       <ToastContainer position="top-center" />
