@@ -22,12 +22,13 @@ const buttonStyle = {
 
 const YourRides = () => {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isMobile = useMediaQuery('(max-width:600px)');
+  const navigate = useNavigate();
 
   const [viewType, setViewType] = useState('dropped');
   const [droppedRides, setDroppedRides] = useState([]);
   const [searchedRides, setSearchedRides] = useState([]);
-  const [openChat, setOpenChat] = useState(null); // 👈 chat popup ride ID
+  const [openChat, setOpenChat] = useState(null);
   const { user } = useSelector((state) => state.auth);
 
   const fetchDroppedRides = async () => {
@@ -47,7 +48,6 @@ const YourRides = () => {
         withCredentials: true,
       });
       setSearchedRides(data.rides);
-      console.log(data);
     } catch (error) {
       console.error('Failed to fetch searched rides:', error);
     }
@@ -85,39 +85,49 @@ const YourRides = () => {
         key={ride._id}
         sx={{
           display: 'flex',
-          flexWrap: 'wrap',
+          flexDirection: isMobile ? 'column' : 'row',
           justifyContent: 'space-between',
-          alignItems: 'center',
+          alignItems: isMobile ? 'flex-start' : 'center',
           p: 2,
           backgroundColor: bgColor,
           borderBottom: '1px solid #ccc',
           gap: 1,
         }}
       >
-        <Typography sx={{ width: '5%' }}>{index + 1}</Typography>
-        <Typography sx={pickupDropStyle} title={ride.pickupLocation.name}>
-          {ride.pickupLocation.name}
+        {!isMobile && <Typography sx={{ width: '5%' }}>{index + 1}</Typography>}
+        <Typography
+          sx={{
+            width: isMobile ? '100%' : '15%',
+            fontWeight: isMobile ? 500 : 'normal',
+          }}
+        >
+          📍 Pickup: {ride.pickupLocation.name}
         </Typography>
-        <Typography sx={pickupDropStyle} title={ride.dropLocation.name}>
-          {ride.dropLocation.name}
+        <Typography
+          sx={{
+            width: isMobile ? '100%' : '15%',
+            fontWeight: isMobile ? 500 : 'normal',
+          }}
+        >
+          🎯 Drop: {ride.dropLocation.name}
         </Typography>
-        <Typography sx={{ width: '10%' }}>{ride.departureDate}</Typography>
-        <Typography sx={{ width: '10%' }}>{ride.departureTime}</Typography>
-        <Box sx={{ width: '11%' }}>
+
+        <Typography sx={{ width: isMobile ? '100%' : '10%' }}>{ride.departureDate}</Typography>
+        <Typography sx={{ width: isMobile ? '100%' : '10%' }}>{ride.departureTime}</Typography>
+        <Box sx={{ width: isMobile ? '100%' : '11%' }}>
           <Chip
             label={ride.status}
             color={ride.status === 'pending' ? 'warning' : ride.status === 'completed' ? 'success' : 'error'}
           />
         </Box>
-        <Typography sx={{ width: '8%' }}>{`${ride.joinedUser?.length || 0} joined`}</Typography>
-        <Box sx={{ width: '15%' }}>
+        <Box sx={{ width: isMobile ? '100%' : '15%' }}>
           <Button
             variant="outlined"
             fullWidth
             onClick={() => navigate(`/dropRide-details/${ride._id}`)}
             sx={buttonStyle}
           >
-            More Details
+            Details
           </Button>
         </Box>
       </Box>
@@ -132,43 +142,54 @@ const YourRides = () => {
         key={ride._id}
         sx={{
           display: 'flex',
-          flexWrap: 'wrap',
+          flexDirection: isMobile ? 'column' : 'row',
           justifyContent: 'space-between',
-          alignItems: 'center',
+          alignItems: isMobile ? 'flex-start' : 'center',
           p: 2,
           backgroundColor: bgColor,
           borderBottom: '1px solid #ccc',
           gap: 1,
         }}
       >
-        <Typography sx={{ width: '5%' }}>{index + 1}</Typography>
-        <Typography sx={pickupDropStyle} title={ride.pickupLocation.name}>
-          {ride.pickupLocation.name}
+        {!isMobile && <Typography sx={{ width: '5%' }}>{index + 1}</Typography>}
+        <Typography
+          sx={{
+            width: isMobile ? '100%' : '15%',
+            fontWeight: isMobile ? 500 : 'normal',
+          }}
+        >
+          📍 Pickup: {ride.pickupLocation.name}
         </Typography>
-        <Typography sx={pickupDropStyle} title={ride.dropLocation.name}>
-          {ride.dropLocation.name}
+        <Typography
+          sx={{
+            width: isMobile ? '100%' : '15%',
+            fontWeight: isMobile ? 500 : 'normal',
+          }}
+        >
+          🎯 Drop: {ride.dropLocation.name}
         </Typography>
-        <Typography sx={{ width: '10%' }}>{ride.departureDate}</Typography>
-        <Typography sx={{ width: '10%' }}>{ride.departureTime}</Typography>
-        <Box sx={{ width: '10%' }}>
+
+        <Typography sx={{ width: isMobile ? '100%' : '10%' }}>{ride.departureDate}</Typography>
+        <Typography sx={{ width: isMobile ? '100%' : '10%' }}>{ride.departureTime}</Typography>
+        <Box sx={{ width: isMobile ? '100%' : '10%' }}>
           <Chip
             label={ride.status}
             color={ride.status === 'pending' ? 'warning' : ride.status === 'completed' ? 'success' : 'error'}
           />
         </Box>
-        <Typography sx={{ width: '10%' }}>{ride.requestStatus || 'Pending'}</Typography>
-        <Box sx={{ width: '10%' }}>
+        <Typography sx={{ width: isMobile ? '100%' : '10%' }}>{ride.requestStatus || 'Pending'}</Typography>
+        <Box sx={{ width: isMobile ? '100%' : '10%' }}>
           <Button variant="outlined" fullWidth color="error" onClick={() => handleMoveOut(ride._id)} sx={buttonStyle}>
             Move Out
           </Button>
         </Box>
-        <Box sx={{ width: '10%' }}>
+        <Box sx={{ width: isMobile ? '100%' : '10%' }}>
           <Button
             variant="contained"
             fullWidth
             onClick={() => handleChatClick(ride._id)}
             sx={buttonStyle}
-            disabled={ride.requestStatus === 'Pending'} // 👈 disable if Pending
+            disabled={ride.requestStatus === 'Pending'}
           >
             Chat
           </Button>
@@ -202,32 +223,50 @@ const YourRides = () => {
         {viewType === 'dropped' ? 'Dropped Ride Details' : 'Searched Ride Details'}
       </Typography>
 
-      <Box
-        sx={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          justifyContent: 'space-between',
-          p: 2,
-          backgroundColor: '#f0f0f0',
-          borderRadius: 2,
-          mb: 1,
-          fontWeight: 'bold',
-        }}
-      >
-        <Typography sx={{ width: isMobile ? '100%' : '5%' }}>S.No.</Typography>
-        <Typography sx={{ width: isMobile ? '100%' : '15%' }}>Pickup</Typography>
-        <Typography sx={{ width: isMobile ? '100%' : '15%' }}>Drop</Typography>
-        <Typography sx={{ width: isMobile ? '100%' : '10%' }}>Date</Typography>
-        <Typography sx={{ width: isMobile ? '100%' : '12%' }}>Time</Typography>
-        <Typography sx={{ width: isMobile ? '100%' : '9.5%' }}>Status</Typography>
-        <Typography sx={{ width: isMobile ? '100%' : '13%' }}>
-          {viewType === 'dropped' ? 'People Joined' : 'Request Status'}
-        </Typography>
-        <Typography sx={{ width: isMobile ? '100%' : '10%' }}>
-          {viewType === 'dropped' ? 'Details' : 'Move Out'}
-        </Typography>
-        {viewType === 'searched' && <Typography sx={{ width: isMobile ? '100%' : '10%' }}>Chat</Typography>}
-      </Box>
+      {!isMobile && viewType === 'dropped' && (
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            backgroundColor: '#f0f0f0',
+            p: 2,
+            borderRadius: 2,
+            mb: 1,
+          }}
+        >
+          <Typography sx={{ width: '5%' }}>S.No.</Typography>
+          <Typography sx={{ width: '15%' }}>Pickup</Typography>
+          <Typography sx={{ width: '15%' }}>Drop</Typography>
+          <Typography sx={{ width: '10%' }}>Date</Typography>
+          <Typography sx={{ width: '10%' }}>Time</Typography>
+          <Typography sx={{ width: '11%' }}>Status</Typography>
+          <Typography sx={{ width: '8%' }}>People Joined</Typography>
+          <Typography sx={{ width: '15%' }}>Details</Typography>
+        </Box>
+      )}
+
+      {!isMobile && viewType === 'searched' && (
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            backgroundColor: '#f0f0f0',
+            p: 2,
+            borderRadius: 2,
+            mb: 1,
+          }}
+        >
+          <Typography sx={{ width: '5%' }}>S.No.</Typography>
+          <Typography sx={{ width: '15%' }}>Pickup</Typography>
+          <Typography sx={{ width: '15%' }}>Drop</Typography>
+          <Typography sx={{ width: '10%' }}>Date</Typography>
+          <Typography sx={{ width: '10%' }}>Time</Typography>
+          <Typography sx={{ width: '10%' }}>Status</Typography>
+          <Typography sx={{ width: '10%' }}>Request Status</Typography>
+          <Typography sx={{ width: '10%' }}>Move Out</Typography>
+          <Typography sx={{ width: '10%' }}>Chat</Typography>
+        </Box>
+      )}
 
       <Divider sx={{ backgroundColor: '#ccc', mb: 1 }} />
 
@@ -241,7 +280,6 @@ const YourRides = () => {
         )
       )}
 
-      {/* 👇 Conditionally Render ChatPopup */}
       {openChat && <ChatPopup rideId={openChat} currentUser={user} onClose={handleCloseChat} />}
     </Box>
   );
