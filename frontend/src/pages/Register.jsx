@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+const BASE_URL = process.env.VITE_BACKEND_URL
 
 const Input = styled('input')({ display: 'none' });
 
@@ -19,7 +20,7 @@ const Register = () => {
     password: '',
     avatar: null,
   });
-
+  
   const handleChange = (e) => {
     const { name, value, files, type } = e.target;
     setFormData((prev) => ({
@@ -45,8 +46,9 @@ const Register = () => {
         return;
       }
 
-      const { data } = await axios.post('/api/v1/users/register', formDataToSend, {
+      const { data } = await axios.post(`${BASE_URL}/api/v1/users/register`, formDataToSend, {
         headers: { 'Content-Type': 'multipart/form-data' },
+        withCredentials: true,
       });
 
       console.log('Response: \n', data);

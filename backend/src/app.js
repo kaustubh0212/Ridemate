@@ -3,6 +3,7 @@ import cors from "cors"
 import cookieParser from "cookie-parser"
 import { Server } from "socket.io";
 import { createServer } from "http";
+const allowedOrigins = process.env.CORS_ORIGIN?.split(",");
 
 
 const app = express()
@@ -10,18 +11,40 @@ const server = createServer(app);
 
 // middlewares
 
+/*
 app.use(cors({
     origin: process.env.CORS_ORIGIN, 
     credentials: true
 }))
+*/
 
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+}));
 
+/*
 const io = new Server(server, {
   cors: {
     origin: process.env.CORS_ORIGIN,
     credentials: true,
   },
 });
+*/
+
+const io = new Server(server, {
+  cors: {
+    origin: allowedOrigins,
+    credentials: true,
+  },
+});
+
 
 
 app.use(express.json({limit: "10mb"}))  // for APIs sending json data
