@@ -3,8 +3,10 @@ import cors from "cors"
 import cookieParser from "cookie-parser"
 import { Server } from "socket.io";
 import { createServer } from "http";
-const allowedOrigins = process.env.CORS_ORIGIN?.split(",");
+const allowedOrigins = process.env.CORS_ORIGIN?.split(",").map(origin => origin.trim());
 
+
+console.log("Allowed origins:", allowedOrigins);
 
 const app = express()
 const server = createServer(app);
@@ -23,6 +25,7 @@ app.use(cors({
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
+      console.log("Blocked by CORS:", origin);
       callback(new Error("Not allowed by CORS"));
     }
   },
