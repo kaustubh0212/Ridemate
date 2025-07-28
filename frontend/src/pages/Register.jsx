@@ -173,7 +173,7 @@ const Register = () => {
             REGISTER
           </Button>
 
-          <Box
+          {/* <Box
             sx={{
               display: 'flex',
               alignItems: 'center',
@@ -185,9 +185,9 @@ const Register = () => {
             <Divider sx={{ flexGrow: 1, backgroundColor: 'white' }} />
             <Typography sx={{ mx: 2, color: 'white', fontWeight: 'bold' }}>OR</Typography>
             <Divider sx={{ flexGrow: 1, backgroundColor: 'white' }} />
-          </Box>
+          </Box> */}
 
-          <Button
+          {/* <Button
             startIcon={<GoogleIcon />}
             variant="outlined"
             sx={{
@@ -203,7 +203,7 @@ const Register = () => {
             }}
           >
             Register with Google
-          </Button>
+          </Button> */}
         </form>
       </Box>
     </Container>

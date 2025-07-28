@@ -7,7 +7,7 @@ import kaustubh from "../assets/professional profile pic.jpg"
 const teamMembers = [
   {
     name: 'KAUSTUBH AGRAWAL',
-    role: 'Backend',
+    role: 'Full Stack',
     description: 'Code wizard focused on scalable systems and innovative backend solutions.',
     image: kaustubh, // update with real path or use a hosted URL
     socials: {
@@ -18,6 +18,7 @@ const teamMembers = [
       github: 'https://github.com/kaustubh0212'
     },
   },
+  /*
   {
     name: 'AKSHAT CHAUDHARY',
     role: 'Frontend',
@@ -31,6 +32,7 @@ const teamMembers = [
       github: 'https://github.com/kaustubh0212'
     },
   },
+  */
 ];
 
 const AboutUs = () => {
@@ -46,10 +48,10 @@ const AboutUs = () => {
       }}
     >
       <Typography variant="h4" fontWeight="bold" color="black" mb={1}>
-        Our Team
+        Developer
       </Typography>
       <Typography variant="body1" color="gray" mb={6}>
-        Meet the minds shaping your travel experience
+        Meet the mind shaping your travel experience
       </Typography>
 
       <Grid container spacing={4} justifyContent="center">
@@ -111,7 +113,7 @@ const AboutUs = () => {
       </Grid>
 
       <Typography variant="caption" color="gray" mt={8} display="block">
-        © 2025 | Built with ❤️ by Kaustubh Agrawal and Akshat Chaudhary
+        © 2025 | Built with ❤️ by Kaustubh Agrawal
       </Typography>
     </Box>
   );

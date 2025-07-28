@@ -199,13 +199,13 @@ const Login = () => {
             LOGIN
           </Button>
 
-          <Box sx={{ display: 'flex', alignItems: 'center', my: 2 }}>
+          {/* <Box sx={{ display: 'flex', alignItems: 'center', my: 2 }}>
             <Divider sx={{ flexGrow: 1, backgroundColor: 'white' }} />
             <Typography sx={{ mx: 2, color: 'white', fontWeight: 'bold' }}>OR</Typography>
             <Divider sx={{ flexGrow: 1, backgroundColor: 'white' }} />
-          </Box>
+          </Box> */}
 
-          <Button
+          {/* <Button
             startIcon={<GoogleIcon />}
             variant="outlined"
             sx={{
@@ -227,7 +227,7 @@ const Login = () => {
             onClick={handleGoogleLogin}
           >
             Login with Google
-          </Button>
+          </Button> */}
         </Box>
       </Box>
     </Container>

@@ -37,7 +37,7 @@ const Service = () => {
           Designed to simplify student travel planning through shared rides, connections, and coordination.
         </Typography>
 
-        <Button
+        {/* <Button
           variant="outlined"
           sx={{
             mb: 6,
@@ -54,7 +54,7 @@ const Service = () => {
           }}
         >
           Contact Us
-        </Button>
+        </Button> */}
 
         <Grid container spacing={4} justifyContent="center">
           {services.map((service, index) => (

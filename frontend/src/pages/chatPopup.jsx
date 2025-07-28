@@ -14,9 +14,11 @@ import SendIcon from "@mui/icons-material/Send";
 import socket from "../socket.js";
 import axios from "axios";
 import { toast } from "react-toastify";
+// import { socket } from "../socket.js"
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const ChatPopup = ({ rideId, currentUser, onClose }) => {
+
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState("");
   const scrollRef = useRef(null);
