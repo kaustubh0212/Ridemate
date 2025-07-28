@@ -65,11 +65,11 @@ const Login = () => {
     e.preventDefault();
     console.log('\nform data to go to backend: ', formData);
     try {
-      const { data } = await axios.post('/api/v1/users/login', {
+      const { data } = await axios.post(`${BACKEND_URL}/api/v1/users/login`, {
         email: formData.email,
         password: formData.password,
         name: formData.name,
-      });
+      }, {withCredentials: true});
       console.log('\nResponse coming back from backend: \n', data);
       console.log("data.success: ", data.success)
       if (data.success) {
