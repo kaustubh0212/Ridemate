@@ -22,6 +22,7 @@ import { Link as ScrollLink } from 'react-scroll';
 import { useDispatch, useSelector } from 'react-redux';
 import { authActions } from '../redux/store.js';
 import axios from 'axios';
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const Navbar = () => {
   const theme = useTheme();
@@ -79,7 +80,8 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     try {
-      await axios.post('/api/v1/users/logout', {}, { withCredentials: true });
+      console.log("Backend URL for logout:", BACKEND_URL);
+      await axios.post(`${BACKEND_URL}/api/v1/users/logout`, {}, { withCredentials: true });
       dispatch(authActions.logout());
       navigate('/login');
     } catch (err) {

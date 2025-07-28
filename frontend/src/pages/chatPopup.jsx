@@ -14,6 +14,7 @@ import SendIcon from "@mui/icons-material/Send";
 import socket from "../socket.js";
 import axios from "axios";
 import { toast } from "react-toastify";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const ChatPopup = ({ rideId, currentUser, onClose }) => {
   const [messages, setMessages] = useState([]);
@@ -37,9 +38,10 @@ const ChatPopup = ({ rideId, currentUser, onClose }) => {
     socket.emit("joinRoom", { rideId });
 
     const fetchMessages = async () => {
+      console.log("Backend URL for cookie login:", BACKEND_URL);
       try {
         const { data } = await axios.get(
-          `/api/v1/chats/get-messages/${rideId}`,
+          `${BACKEND_URL}/api/v1/chats/get-messages/${rideId}`,
           { withCredentials: true }
         );
         setMessages(data.data);

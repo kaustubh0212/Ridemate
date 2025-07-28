@@ -13,6 +13,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const libraries = ['places'];
 
@@ -59,9 +60,10 @@ const SearchRide = () => {
   const handleSearch = async () => {
     if (!pickup || !drop) return toast.error('Both locations required');
     if (!isLoggedIn) return navigate('/login');
+    console.log("Backend URL for SearchRide:", BACKEND_URL);
 
     try {
-      const { data } = await axios.get('/api/v1/rides/searchRides', {
+      const { data } = await axios.get(`${BACKEND_URL}/api/v1/rides/searchRides`, {
         params: {
           pickupName: pickup.name,
           dropName: drop.name,

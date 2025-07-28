@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ChatPopup from '../pages/chatPopup';
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const pickupDropStyle = {
   width: '15%',
@@ -32,8 +33,9 @@ const YourRides = () => {
   const { user } = useSelector((state) => state.auth);
 
   const fetchDroppedRides = async () => {
+    console.log("Backend URL for FetchDroppedRides:", BACKEND_URL);
     try {
-      const { data } = await axios.get('/api/v1/rides/dropped-rides', {
+      const { data } = await axios.get(`${BACKEND_URL}/api/v1/rides/dropped-rides`, {
         withCredentials: true,
       });
       setDroppedRides(data.rides);
@@ -43,8 +45,9 @@ const YourRides = () => {
   };
 
   const fetchSearchedRides = async () => {
+    console.log("Backend URL for FetchSearchedRides:", BACKEND_URL);
     try {
-      const { data } = await axios.get('/api/v1/rides/searched-rides', {
+      const { data } = await axios.get(`${BACKEND_URL}/api/v1/rides/searched-rides`, {
         withCredentials: true,
       });
       setSearchedRides(data.rides);
@@ -54,8 +57,9 @@ const YourRides = () => {
   };
 
   const handleMoveOut = async (rideId) => {
+    console.log("Backend URL for HandleMoveOut:", BACKEND_URL);
     try {
-      await axios.post(`/api/v1/rides/move-out/${rideId}`, {}, { withCredentials: true });
+      await axios.post(`${BACKEND_URL}/api/v1/rides/move-out/${rideId}`, {}, { withCredentials: true });
       toast.success('You have Moved Out Successfully');
       fetchSearchedRides();
     } catch (err) {

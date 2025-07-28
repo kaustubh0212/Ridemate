@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { GoogleMap, Marker, useJsApiLoader, DirectionsService, DirectionsRenderer } from '@react-google-maps/api';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const libraries = ['places'];
 const containerStyle = { width: '100%', height: '100%' };
@@ -126,7 +127,8 @@ const DropRide = () => {
         carDetails,
       };
 
-      const { data } = await axios.post('/api/v1/rides/drop-ride', rideData, {
+      console.log("Backend URL for DropRide:", BACKEND_URL);
+      const { data } = await axios.post(`${BACKEND_URL}/api/v1/rides/drop-ride`, rideData, {
         withCredentials: true,
       });
 

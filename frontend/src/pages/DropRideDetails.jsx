@@ -20,6 +20,7 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import socket from '../socket.js';
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const RideManage = () => {
   const { rideId } = useParams();
@@ -42,7 +43,8 @@ const RideManage = () => {
 
   const fetchRideDetails = async () => {
     try {
-      const { data } = await axios.get(`/api/v1/rides/ride-detail/${rideId}`, { withCredentials: true });
+      console.log("Backend URL for FetchRideDetails:", BACKEND_URL);
+      const { data } = await axios.get(`${BACKEND_URL}/api/v1/rides/ride-detail/${rideId}`, { withCredentials: true });
       setRide(data.data.rideDetails);
       setJoinedUsers(data.data.joinedUsers);
       setRequestedUsers(data.data.requestedUsers);
@@ -53,7 +55,8 @@ const RideManage = () => {
 
   const fetchMessages = async () => {
     try {
-      const { data } = await axios.get(`/api/v1/chats/get-messages/${rideId}`, { withCredentials: true });
+      console.log("Backend URL for FetchMessages:", BACKEND_URL);
+      const { data } = await axios.get(`${BACKEND_URL}/api/v1/chats/get-messages/${rideId}`, { withCredentials: true });
       setMessages(data.data);
     } catch {
       toast.error('Failed to load messages');
@@ -62,7 +65,8 @@ const RideManage = () => {
 
   const handleAccept = async (userId) => {
     try {
-      await axios.post(`/api/v1/rides/accept-request/${rideId}/${userId}`, {}, { withCredentials: true });
+      console.log("Backend URL for AcceptRequest:", BACKEND_URL);
+      await axios.post(`${BACKEND_URL}/api/v1/rides/accept-request/${rideId}/${userId}`, {}, { withCredentials: true });
       toast.success('User accepted');
       fetchRideDetails();
     } catch {
@@ -72,7 +76,8 @@ const RideManage = () => {
 
   const handleCancelRide = async () => {
     try {
-      await axios.patch(`/api/v1/rides/cancel-ride/${rideId}`, {}, { withCredentials: true });
+      console.log("Backend URL for HandleCancelRide:", BACKEND_URL);
+      await axios.patch(`${BACKEND_URL}/api/v1/rides/cancel-ride/${rideId}`, {}, { withCredentials: true });
       toast.success('Ride cancelled');
       fetchRideDetails();
     } catch {
