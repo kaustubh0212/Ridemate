@@ -93,7 +93,7 @@ const handleRequest = async (rideId) => {
   
   try {
     const { data } = await axios.post(
-      `/api/v1/rides/requestRide/${rideId}`,
+      `${BACKEND_URL}/api/v1/rides/requestRide/${rideId}`,
       {}, // no body needed
       { withCredentials: true }
     );
