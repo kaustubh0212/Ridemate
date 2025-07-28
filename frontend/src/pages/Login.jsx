@@ -7,6 +7,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { authActions } from '../redux/store.js';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const Login = () => {
 
@@ -24,7 +25,7 @@ const Login = () => {
   const fetchUser = async () => {
     console.log("running FetchUser()")
     try {
-      const { data } = await axios.get('/api/v1/users/current-user', {
+      const { data } = await axios.get(`${BACKEND_URL}/api/v1/users/current-user`, {
         withCredentials: true,
       });
 
