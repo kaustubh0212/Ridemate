@@ -25,6 +25,7 @@ const Login = () => {
   const fetchUser = async () => {
     console.log("running FetchUser()")
     try {
+      console.log("Backend URL:", BACKEND_URL);
       const { data } = await axios.get(`${BACKEND_URL}/api/v1/users/current-user`, {
         withCredentials: true,
       });
@@ -63,6 +64,7 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("Backend URL:", BACKEND_URL);
     console.log('\nform data to go to backend: ', formData);
     try {
       const { data } = await axios.post(`${BACKEND_URL}/api/v1/users/login`, {
