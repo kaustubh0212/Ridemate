@@ -2,7 +2,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { ApiError } from "../utils/ApiError.js";
 import jwt from "jsonwebtoken";
-import  User  from "../models/user.model.js";
+import User from "../models/user.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 
 const registerUser = asyncHandler(async (req, res) => {
@@ -133,11 +133,21 @@ const loginUser = asyncHandler(async (req, res) => {
     " -password -refreshToken"
   );
 
+  /*
   const options = {
-    // to make sure that cookie is edited from the server / backend only and not the frontend (views only)
-    httpOnly: true, // JavaScript on frontend cannot read/edit this cookie (protects from XSS). For frontend to read, them, we will use getCurrentUser() function
-    secure: true, // Only sent over HTTPS
+    httpOnly: true,
+    secure: true,
   };
+  */
+
+  const options = {
+    httpOnly: true,
+    secure: true,
+    sameSite: "None",
+  };
+
+  console.log("Access Token: ", accessToken);
+  console.log("\n\nRefresh Token: ", refreshToken);
 
   return res
     .status(200)
@@ -234,9 +244,17 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
       throw new ApiError(401, "Refresh token is expired or use");
     }
 
+    /*
     const options = {
       httpOnly: true,
       secure: true,
+    };
+    */
+
+    const options = {
+      httpOnly: true,
+      secure: true,
+      sameSite: "None",
     };
 
     const [newAccessToken, newRefreshToken] = generateAccessAndRefreshTokens(
@@ -269,36 +287,46 @@ const getCurrentUser = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, req.user, "curret user fetched successfully"));
 });
 
-const logoutUser = asyncHandler(async(req, res) =>{
-    // Need to reset both access token and refresh token
+const logoutUser = asyncHandler(async (req, res) => {
+  // Need to reset both access token and refresh token
 
-    // clearing cookie from database
-    
-    const updated = await User.findByIdAndUpdate(
-        req.user._id, // how to search
-        {
-            $set: {  // what to update
-                refreshToken: undefined,
-            }
-        },
-        { // to return new value of refreshToken
-            new: true
-        }
-    )
+  // clearing cookie from database
 
-    //console.log("updated:", updated);
+  const updated = await User.findByIdAndUpdate(
+    req.user._id, // how to search
+    {
+      $set: {
+        // what to update
+        refreshToken: undefined,
+      },
+    },
+    {
+      // to return new value of refreshToken
+      new: true,
+    }
+  );
 
+  //console.log("updated:", updated);
+
+  /*
     const options = {
         httpOnly: true,
         secure: true
     }
+      */
 
-    return res
+  const options = {
+    httpOnly: true,
+    secure: true,
+    sameSite: "None",
+  };
+
+  return res
     .status(200)
-    .clearCookie("accessToken", options)  // clearing cookie from browser
+    .clearCookie("accessToken", options) // clearing cookie from browser
     .clearCookie("refreshToken", options)
-    .json(new ApiResponse(200, {}, "User logged out"))
-})
+    .json(new ApiResponse(200, {}, "User logged out"));
+});
 
 export {
   registerUser,
