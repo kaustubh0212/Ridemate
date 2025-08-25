@@ -7,7 +7,7 @@ import kaustubh from "../assets/professional profile pic.jpg"
 const teamMembers = [
   {
     name: 'KAUSTUBH AGRAWAL',
-    role: 'Full Stack',
+    role: 'FullStack',
     description: 'Code wizard focused on scalable systems and innovative backend solutions.',
     image: kaustubh, // update with real path or use a hosted URL
     socials: {
@@ -18,10 +18,10 @@ const teamMembers = [
       github: 'https://github.com/kaustubh0212'
     },
   },
-  /*
+  
   {
     name: 'AKSHAT CHAUDHARY',
-    role: 'Frontend',
+    role: 'Frontend and Web design',
     description: 'Passionate about designing seamless digital experiences and building user-centric apps.',
     image: akshat,
     socials: {
@@ -29,10 +29,10 @@ const teamMembers = [
       //twitter: '#',
       //instagram: '#',
       linkedin: 'https://www.linkedin.com/in/akshatt-choudhary-913a46265/',
-      github: 'https://github.com/kaustubh0212'
+      github: 'https://github.com/Akshatt12-creator'
     },
   },
-  */
+  
 ];
 
 const AboutUs = () => {
@@ -48,10 +48,10 @@ const AboutUs = () => {
       }}
     >
       <Typography variant="h4" fontWeight="bold" color="black" mb={1}>
-        Developer
+        Developers
       </Typography>
       <Typography variant="body1" color="gray" mb={6}>
-        Meet the mind shaping your travel experience
+        Meet the minds shaping your travel experience
       </Typography>
 
       <Grid container spacing={4} justifyContent="center">
@@ -113,7 +113,7 @@ const AboutUs = () => {
       </Grid>
 
       <Typography variant="caption" color="gray" mt={8} display="block">
-        © 2025 | Built with ❤️ by Kaustubh Agrawal
+        © 2025 | Built with ❤️ by Kaustubh Agrawal and Akshat Chaudhary
       </Typography>
     </Box>
   );
