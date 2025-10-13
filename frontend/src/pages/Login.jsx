@@ -198,36 +198,6 @@ const Login = () => {
           >
             LOGIN
           </Button>
-
-          {/* <Box sx={{ display: 'flex', alignItems: 'center', my: 2 }}>
-            <Divider sx={{ flexGrow: 1, backgroundColor: 'white' }} />
-            <Typography sx={{ mx: 2, color: 'white', fontWeight: 'bold' }}>OR</Typography>
-            <Divider sx={{ flexGrow: 1, backgroundColor: 'white' }} />
-          </Box> */}
-
-          {/* <Button
-            startIcon={<GoogleIcon />}
-            variant="outlined"
-            sx={{
-              borderColor: 'white',
-              color: 'white',
-              borderRadius: 2,
-              px: 2,
-              width: '80%',
-              mx: 'auto',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              textTransform: 'none',
-              '& .MuiButton-startIcon': {
-                marginRight: '8px',
-              },
-              '&:hover': { backgroundColor: '#333' },
-            }}
-            onClick={handleGoogleLogin}
-          >
-            Login with Google
-          </Button> */}
         </Box>
       </Box>
     </Container>
