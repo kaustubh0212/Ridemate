@@ -19,19 +19,19 @@ const teamMembers = [
     },
   },
   
-  {
-    name: 'AKSHAT CHAUDHARY',
-    role: 'Frontend and Web design',
-    description: 'Passionate about designing seamless digital experiences and building user-centric apps.',
-    image: akshat,
-    socials: {
-      //facebook: '#',
-      //twitter: '#',
-      //instagram: '#',
-      linkedin: 'https://www.linkedin.com/in/akshatt-choudhary-913a46265/',
-      github: 'https://github.com/Akshatt12-creator'
-    },
-  },
+  // {
+  //   name: 'AKSHAT CHAUDHARY',
+  //   role: 'Frontend and Web design',
+  //   description: 'Passionate about designing seamless digital experiences and building user-centric apps.',
+  //   image: akshat,
+  //   socials: {
+  //     //facebook: '#',
+  //     //twitter: '#',
+  //     //instagram: '#',
+  //     linkedin: 'https://www.linkedin.com/in/akshatt-choudhary-913a46265/',
+  //     github: 'https://github.com/Akshatt12-creator'
+  //   },
+  // },
   
 ];
 
