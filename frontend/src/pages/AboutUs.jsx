@@ -62,7 +62,7 @@ const AboutUs = () => {
       }}
     >
       <Typography variant="h4" fontWeight="bold" color="black" mb={1}>
-        Developer
+        Developers
       </Typography>
 
       <Grid container spacing={4} justifyContent="center">
@@ -124,7 +124,7 @@ const AboutUs = () => {
       </Grid>
 
       <Typography variant="caption" color="gray" mt={8} display="block">
-        © 2025 | Built with ❤️ by Kaustubh Agrawal
+        © 2025 | Built with ❤️ Love
       </Typography>
     </Box>
   );
