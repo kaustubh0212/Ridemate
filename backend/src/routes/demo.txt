@@ -1,0 +1,8 @@
+1) User schema
+
+2) Database connection
+
+3) User register page: frontend
+
+Backend:
+4) router -> controller -> return response

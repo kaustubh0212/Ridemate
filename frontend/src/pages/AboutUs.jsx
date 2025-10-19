@@ -3,36 +3,50 @@ import { Box, Typography, Grid, Avatar, Stack, IconButton, useTheme } from '@mui
 import { Facebook, Twitter, Instagram, LinkedIn, GitHub } from '@mui/icons-material';
 import akshat from "../assets/akshat.jpg"
 import kaustubh from "../assets/professional profile pic.jpg"
+import sneh from "../assets/sneh.jpeg"
 
 const teamMembers = [
-  {
-    name: 'KAUSTUBH AGRAWAL',
-    role: 'FullStack',
-    description: 'Code wizard focused on scalable systems and innovative backend solutions.',
-    image: kaustubh, // update with real path or use a hosted URL
-    socials: {
-      //facebook: '#',
-      //twitter: '#',
-      //instagram: '#',
-      linkedin: 'https://www.linkedin.com/in/kaustubh-agrawal-50186a251/',
-      github: 'https://github.com/kaustubh0212'
-    },
-  },
-  
   // {
-  //   name: 'AKSHAT CHAUDHARY',
-  //   role: 'Frontend and Web design',
-  //   description: 'Passionate about designing seamless digital experiences and building user-centric apps.',
-  //   image: akshat,
+  //   name: 'KAUSTUBH AGRAWAL',
+  //   role: 'FullStack',
+  //   description: 'Code wizard focused on scalable systems and innovative backend solutions.',
+  //   image: kaustubh, // update with real path or use a hosted URL
   //   socials: {
   //     //facebook: '#',
   //     //twitter: '#',
   //     //instagram: '#',
-  //     linkedin: 'https://www.linkedin.com/in/akshatt-choudhary-913a46265/',
-  //     github: 'https://github.com/Akshatt12-creator'
+  //     linkedin: 'https://www.linkedin.com/in/kaustubh-agrawal-50186a251/',
+  //     github: 'https://github.com/kaustubh0212'
   //   },
   // },
+
+  {
+    name: 'SNEH PATEL',
+    role: 'FullStack',
+    description: 'Code wizard focused on scalable systems and innovative backend solutions.',
+    image: sneh, // update with real path or use a hosted URL
+    socials: {
+      //facebook: '#',
+      //twitter: '#',
+      //instagram: '#',
+      linkedin: 'https://www.linkedin.com/in/snehpatel9/',
+      github: 'https://github.com/sneh2401'
+    },
+  },
   
+  {
+    name: 'AKSHAT CHAUDHARY',
+    role: 'Frontend and Web design',
+    description: 'Passionate about designing seamless digital experiences and building user-centric apps.',
+    image: akshat,
+    socials: {
+      //facebook: '#',
+      //twitter: '#',
+      //instagram: '#',
+      linkedin: 'https://www.linkedin.com/in/akshatt-choudhary-913a46265/',
+      github: 'https://github.com/Akshatt12-creator'
+    },
+  },
 ];
 
 const AboutUs = () => {
